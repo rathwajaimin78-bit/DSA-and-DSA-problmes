@@ -7,27 +7,57 @@
 //  Y  A/  H  R/
 //  P  /   I  /
 
+
+
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
-int main()
-{
-    int size = 25;
-    char *s = (char *)malloc(size * sizeof(char));
-    int number_of_Row = 3;
 
-    printf("enter a word :  ");
-    scanf("%s", &s);
+char* convert(char* s, int numRows) {
+    int len = strlen(s);
 
-    for (int i = 0; i < number_of_Row; i++)
-    {
-        printf("%c", s[i]);
+    if (numRows == 1 || numRows >= len) {
+        return s;
+    }
 
-        for (int j = i; j < 1; j = j + (number_of_Row - 2 + number_of_Row - 1) - 2*i)
-        {
-            printf("%c", s[j +1]);
+    char* result = (char*)malloc((len + 1) * sizeof(char));
+    if (result == NULL) {
+        return NULL;
+    }
+
+    int index = 0;
+    int cycle = 2 * numRows - 2;
+
+    for (int row = 0; row < numRows; row++) {
+        for (int j = row; j < len; j += cycle) {
+            result[index++] = s[j];
+
+            int diagonal = j + cycle - 2 * row;
+
+            if (row != 0 && row != numRows - 1 &&
+                diagonal < len) {
+                result[index++] = s[diagonal];
+            }
         }
     }
 
-    free(s);
+    result[index] = '\0';
+    return result;
+}
+
+int main() {
+    char s[] = "PAYPALISHIRING";
+    int numRows = 3;
+
+    char* result = convert(s, numRows);
+
+    if (result != NULL) {
+        printf("%s\n", result);
+
+        if (result != s) {
+            free(result);
+        }
+    }
+
     return 0;
 }
